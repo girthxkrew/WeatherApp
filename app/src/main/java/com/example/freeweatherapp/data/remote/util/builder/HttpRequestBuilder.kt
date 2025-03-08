@@ -15,13 +15,12 @@ import com.example.freeweatherapp.data.remote.util.builder.ext.toUrlFormat
 import com.example.freeweatherapp.data.remote.util.builder.model.Coordinate
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.TimeZone
 
 class HttpRequestBuilder private constructor(private val apiVersion: ApiVersion) {
     private val latitude = mutableListOf<Double>()
     private val longitude = mutableListOf<Double>()
-    private var elevation: Double? = null
+    private var elevation = mutableListOf<Double>()
     private val current = mutableListOf<String>()
     private val hourly = mutableListOf<String>()
     private val daily = mutableListOf<String>()
@@ -51,14 +50,14 @@ class HttpRequestBuilder private constructor(private val apiVersion: ApiVersion)
         fun builder(apiVersion: ApiVersion = ApiVersion.V1) = HttpRequestBuilder(apiVersion)
     }
 
-    fun addLocation(vararg parameters: Coordinate) = apply {
+    fun addCoordinate(vararg parameters: Coordinate) = apply {
         parameters.forEach { coordinate ->
             latitude.add(coordinate.latitude)
             longitude.add(coordinate.longitude)
         }
     }
 
-    fun elevation(elevation: Double) = apply { this.elevation = elevation }
+    fun elevation(vararg parameters: Double) = apply { this.elevation.addAll(parameters.toList()) }
     fun timezone(vararg timezone: TimeZone) = apply { this.timezone.addAll(timezone.map { it.id }) }
     fun current(vararg parameters: CurrentParameter) = apply { this.current.addAll(parameters.map { it.value }) }
     fun hourly(vararg parameters: HourlyParameter) = apply { this.hourly.addAll(parameters.map { it.value }) }
@@ -129,12 +128,13 @@ class HttpRequestBuilder private constructor(private val apiVersion: ApiVersion)
     fun build(): String {
         require(latitude.isNotEmpty() && longitude.isNotEmpty()) { "At least one location must be set" }
         require(latitude.size >= timezone.size && longitude.size >= timezone.size) { "Longitude, Latitude, Timezone sizes must be the same number" }
+        require(latitude.size >= elevation.size && longitude.size >= elevation.size) { "Longitude, Latitude, Elevation sizes must be the same number" }
         val params = StringBuilder()
             .append("${apiVersion.baseUrl}?")
             .append("${QueryParameters.LATITUDE}=${latitude.joinToString(",")}&")
             .append("${QueryParameters.LONGITUDE}=${longitude.joinToString(",")}")
 
-        elevation?.let { params.append("&${QueryParameters.ELEVATION}=$it") }
+        if (elevation.isNotEmpty()) params.append("&${QueryParameters.ELEVATION}=${elevation.joinToString(",")}")
         if (timezone.isNotEmpty()) params.append(
             "&${QueryParameters.TIMEZONE}=${
                 timezone.joinToString(

@@ -27,4 +27,8 @@ enum class Minutely15Parameter(val value: String) {
     WIND_GUSTS_10M("wind_gusts_10m"),
     VISIBILITY("visibility"),
     WEATHER_CODE("weather_code");
+
+    companion object {
+        val ALL : Array<Minutely15Parameter> = entries.toTypedArray()
+    }
 }

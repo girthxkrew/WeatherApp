@@ -39,8 +39,6 @@ enum class WeatherModel(val modelName: String) {
     UK_MET_OFFICE_UKMO_UKV("UK Met Office UKMO UKV");
 
     companion object {
-        fun fromString(modelName: String): WeatherModel? {
-            return values().find { it.modelName == modelName }
-        }
+        val ALL : Array<WeatherModel> = WeatherModel.entries.toTypedArray()
     }
 }

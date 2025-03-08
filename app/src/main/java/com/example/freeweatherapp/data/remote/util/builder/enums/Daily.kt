@@ -1,5 +1,7 @@
 package com.example.freeweatherapp.data.remote.util.builder.enums
 
+import com.example.freeweatherapp.data.remote.model.response.Daily
+
 enum class DailyParameter(val value: String) {
     WEATHER_CODE("weather_code"),
     TEMPERATURE_2M_MAX("temperature_2m_max"),
@@ -23,4 +25,8 @@ enum class DailyParameter(val value: String) {
     WIND_DIRECTION_10M_DOMINANT("wind_direction_10m_dominant"),
     SHORTWAVE_RADIATION_SUM("shortwave_radiation_sum"),
     ET0_FAO_EVAPOTRANSPIRATION("et0_fao_evapotranspiration");
+
+    companion object {
+        val ALL : Array<DailyParameter> = DailyParameter.entries.toTypedArray()
+    }
 }

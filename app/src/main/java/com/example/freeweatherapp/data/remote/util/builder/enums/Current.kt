@@ -16,4 +16,8 @@ enum class CurrentParameter(val value: String) {
     WIND_SPEED_10M("wind_speed_10m"),
     WIND_DIRECTION_10M("wind_direction_10m"),
     WIND_GUSTS_10M("wind_gusts_10m");
+
+    companion object {
+        val ALL : Array<CurrentParameter> = CurrentParameter.entries.toTypedArray()
+    }
 }
